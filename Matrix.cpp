@@ -76,8 +76,25 @@ Matrix::Matrix(const Matrix &other){
 	matrix = other.matrix;
 }
 
+Matrix::Matrix(const std::vector<double> &other){
+	Matrix vec(1, other.size());
+	for(std::size_t i = 0; i < other.size(); ++i){
+		vec[0][i] = other[i];
+	}
+	std::swap(matrix, vec.matrix);
+}
+
 Matrix& Matrix::operator=(const Matrix &rhs){
 	matrix = rhs.matrix;
+	return *this;
+}
+
+Matrix& Matrix::operator=(const std::vector<double> &rhs){
+	Matrix vec(1, rhs.size());
+	for(std::size_t i = 0; i < rhs.size(); ++i){
+		vec[0][i] = rhs[i];
+	}
+	std::swap(matrix, vec.matrix);
 	return *this;
 }
 

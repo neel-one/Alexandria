@@ -48,7 +48,11 @@ public:
 	 testing and optimization) */
 	Matrix(const Matrix &other);
 	
+	Matrix(const std::vector<double> &other);
+	
 	Matrix& operator=(const Matrix &rhs);
+	
+	Matrix& operator=(const std::vector<double> &rhs);
 	
 	~Matrix();
 	/*                    */
