@@ -12,7 +12,9 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <sstream>
 #include <exception>
+#include <math.h>
 
 class OperationError: public std::exception {};
 class NotImplementedError: public std::exception {};
@@ -36,6 +38,10 @@ public:
 	
 	Matrix(std::istream &in);
 	
+	Matrix(std::string str);
+	
+	Matrix(std::string &str);
+	
 	
 	/* Don't need destructor because dynamic memory is
 	 taken care of by STL vector! (Generally safer to use STL than dynamic memory due to extensive
@@ -54,6 +60,8 @@ public:
 	const std::vector<double> & operator[](std::size_t row) const {
 		return matrix[row];
 	}
+	
+	bool operator==(const Matrix &other);
 	
 	std::size_t rows() const {
 		return matrix.size();
@@ -75,10 +83,13 @@ private:
 	std::vector< std::vector< double > > matrix;
 	
 };
+std::ostream & operator<<(std::ostream & os, const Matrix & m);
 
 //REQUIRES: columns of a == rows of b
 //Standard matrix multiplication
 Matrix operator*(const Matrix &a, const Matrix &b);
+
+
 
 Matrix transpose(Matrix & m);
 
@@ -88,6 +99,8 @@ double det(Matrix & m);
 //Standard scalar result dot product
 double dot(Matrix &a, Matrix &b);
 //double dot(std::vector<double> &a, std::vector<double> &b);
+
+Matrix createSmallerMatrix(Matrix & m, std::size_t skip_row, std::size_t skip_col);
 
 //REQUIRES: n x n matrix AND det(m) != 0
 Matrix inverse(Matrix & m);

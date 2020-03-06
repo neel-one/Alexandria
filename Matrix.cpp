@@ -26,9 +26,49 @@ Matrix::Matrix(std::istream &in){
 	std::size_t i = 0;
 	std::size_t j = 0;
 	while(in >> elt){
-		matrix[i++][j++] = elt;
-		if(i == rows) i = 0;
-		if(j == cols) j = 0;
+		matrix[i][j++] = elt;
+		if(j == cols){
+			j = 0;
+			++i;
+		}
+	}
+}
+
+Matrix::Matrix(std::string str){
+	std::istringstream in(str);
+	std::size_t rows, cols;
+	in >> rows;
+	in >> cols;
+	matrix = std::vector< std::vector<double> > (rows, std::vector<double>(cols, 0));
+	
+	double elt;
+	std::size_t i = 0;
+	std::size_t j = 0;
+	while(in >> elt){
+		matrix[i][j++] = elt;
+		if(j == cols){
+			j = 0;
+			++i;
+		}
+	}
+}
+
+Matrix::Matrix(std::string &str){
+	std::istringstream in(str);
+	std::size_t rows, cols;
+	in >> rows;
+	in >> cols;
+	matrix = std::vector< std::vector<double> > (rows, std::vector<double>(cols, 0));
+	
+	double elt;
+	std::size_t i = 0;
+	std::size_t j = 0;
+	while(in >> elt){
+		matrix[i][j++] = elt;
+		if(j == cols){
+			j = 0;
+			++i;
+		}
 	}
 }
 
@@ -43,6 +83,9 @@ Matrix& Matrix::operator=(const Matrix &rhs){
 
 Matrix::~Matrix() {}
 
+bool Matrix::operator==(const Matrix &other){
+	return matrix == other.matrix;
+}
 
 
 void Matrix::transpose(){
@@ -91,6 +134,16 @@ Matrix operator*(const Matrix &a, const Matrix &b){
 	return m;
 }
 
+std::ostream & operator<<(std::ostream & os, const Matrix & m){
+	for(std::size_t i = 0; i < m.rows(); ++i){
+		for(std::size_t j = 0; j < m.cols(); ++j){
+			os << m[i][j] << " ";
+		}
+		os << "\n";
+	}
+	return os;
+}
+
 Matrix transpose(Matrix & m){
 	Matrix result(m.cols(), m.rows());
 	for(std::size_t i = 0; i < m.rows(); ++i){
@@ -101,11 +154,79 @@ Matrix transpose(Matrix & m){
 	return result;
 }
 
+Matrix createSmallerMatrix(Matrix & m, std::size_t skip_row, std::size_t skip_col){
+	Matrix sml(m.rows() - 1, m.cols() - 1);
+	std::size_t sml_row, sml_col;
+	sml_row = 0;
+	sml_col = 0;
+	for(std::size_t i = 0; i < m.rows(); ++i){
+		if(i == skip_row) continue;
+		for(std::size_t j = 0; j < m.cols(); ++j){
+			if(j == skip_col) continue;
+			sml[sml_row][sml_col++] = m[i][j];
+		}
+		++sml_row;
+		sml_col = 0;
+	}
+	
+	return sml;
+}
+double det_helper(Matrix & m){
+	
+	double det = 0;
+	if(m.rows() == 1) return m[0][0];
+	int pow = 1;
+	for(std::size_t col = 0; col < m.cols(); ++col){
+		Matrix sm = createSmallerMatrix(m, 0, col);
+		det += pow * m[0][col] * det_helper(sm);
+		pow *= -1;
+	}
+	
+	return det;
+}
+
 double det(Matrix & m){
-	throw NotImplementedError();
+	return det_helper(m);
+}
+
+Matrix cofactor(Matrix &m){
+	Matrix C(m.rows(), m.cols());
+	for(std::size_t i = 0; i < m.rows(); ++i){
+		for(std::size_t j = 0; j < m.cols(); ++j){
+			Matrix ij_minor = createSmallerMatrix(m, i, j);
+			C[i][j] = pow(-1, i+j) * det(ij_minor);
+		}
+	}
+	return C;
+}
+
+Matrix adjugate(Matrix &m){
+	Matrix C = cofactor(m);
+	return transpose(C);
 }
 
 Matrix inverse(Matrix & m){
-	throw NotImplementedError();
+	double dt = det(m);
+	if(dt == 0) throw OperationError();
+	double det_inverse = 1 / dt;
+	Matrix adj = adjugate(m);
+	for(std::size_t i = 0; i < m.rows(); ++i){
+		for(std::size_t j = 0; j < m.cols(); ++j){
+			adj[i][j] *= det_inverse;
+		}
+	}
+	return adj;
+}
+
+Matrix inverse(Matrix & m, double dt){
+	if(dt == 0) throw OperationError();
+	double det_inverse = 1 / dt;
+	Matrix adj = adjugate(m);
+	for(std::size_t i = 0; i < m.rows(); ++i){
+		for(std::size_t j = 0; j < m.cols(); ++j){
+			adj[i][j] *= det_inverse;
+		}
+	}
+	return adj;
 }
 
