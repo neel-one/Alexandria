@@ -13,11 +13,10 @@
 #include <vector>
 #include <string>
 #include <sstream>
-#include <exception>
 #include <math.h>
+#include "error.h"
 
-class OperationError: public std::exception {};
-class NotImplementedError: public std::exception {};
+
 
 class Matrix {
 public:
@@ -65,6 +64,15 @@ public:
 		return matrix[row];
 	}
 	
+	
+	//reserves space at the end for quick appending of rows.
+	//TODO
+	void reserve(std::size_t extra_row);
+	
+	//reserves space at the end of each column for quick appending of columns
+	//TODO
+	void reserve_col(std::size_t extra_col);
+	
 	bool operator==(const Matrix &other);
 	
 	std::size_t rows() const {
@@ -80,6 +88,15 @@ public:
 	
 	//REQUIRES: n x n matrix
 	double det();
+	
+	//Append row
+	//NOTE: First operation is O(n) due to reallocation unless reserve is specified
+	void append(std::vector<double> &row);
+	
+	//Append column
+	//NOTE: First operation is O(n) due to reallocation unless reserve is specified
+	//REQUIRES: matrix is not empty
+	void append_col(std::vector<double> &col);
 
 	
 private:
@@ -111,6 +128,7 @@ Matrix inverse(Matrix & m);
 
 /* Other functions that are not necessary but may be nice to implement at
 	a later time; core linear algebra topics, etc.
+TODO
  */
 Matrix rref(Matrix & m);
 

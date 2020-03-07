@@ -64,10 +64,12 @@ int main(){
 	msg("determinant tests");
 	assert(det(b) == 0);
 	assert(det(sm) == -6);
+	assert(sm.det() == -6);
 	assert(det(sm2) == -3);
 
 	cout << det(sq) << endl;
 	assert(det(sq) == 0);
+	assert(sq.det() == 0);
 	passed();
 	
 	msg("transpose tests");

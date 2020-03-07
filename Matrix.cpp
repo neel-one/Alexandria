@@ -20,7 +20,8 @@ Matrix::Matrix(std::istream &in){
 	std::size_t rows, cols;
 	in >> rows;
 	in >> cols;
-	matrix = std::vector< std::vector<double> > (rows, std::vector<double>(cols, 0));
+	matrix = std::vector< std::vector<double> > (rows,
+												 std::vector<double>(cols, 0));
 	
 	double elt;
 	std::size_t i = 0;
@@ -39,7 +40,8 @@ Matrix::Matrix(std::string str){
 	std::size_t rows, cols;
 	in >> rows;
 	in >> cols;
-	matrix = std::vector< std::vector<double> > (rows, std::vector<double>(cols, 0));
+	matrix = std::vector< std::vector<double> > (rows,
+												 std::vector<double>(cols, 0));
 	
 	double elt;
 	std::size_t i = 0;
@@ -58,7 +60,8 @@ Matrix::Matrix(std::string &str){
 	std::size_t rows, cols;
 	in >> rows;
 	in >> cols;
-	matrix = std::vector< std::vector<double> > (rows, std::vector<double>(cols, 0));
+	matrix = std::vector< std::vector<double> > (rows,
+												 std::vector<double>(cols, 0));
 	
 	double elt;
 	std::size_t i = 0;
@@ -100,6 +103,14 @@ Matrix& Matrix::operator=(const std::vector<double> &rhs){
 
 Matrix::~Matrix() {}
 
+void Matrix::reserve(std::size_t extra_row){
+	throw NotImplementedError();
+}
+
+void Matrix::reserve_col(std::size_t extra_col){
+	throw NotImplementedError();
+}
+
 bool Matrix::operator==(const Matrix &other){
 	return matrix == other.matrix;
 }
@@ -116,7 +127,19 @@ void Matrix::transpose(){
 }
 
 double Matrix::det(){
-	throw NotImplementedError();
+	return ::det(*this);
+}
+
+void Matrix::append(std::vector<double> &row){
+	if(matrix.size() > 0 and row.size() != matrix[0].size()) throw OperationError();
+	matrix.push_back(row);
+}
+
+void Matrix::append_col(std::vector<double> &col){
+	if(matrix.size() != col.size()) throw OperationError();
+	for(std::size_t row = 0; row < matrix.size(); ++row){
+		matrix[row].push_back(col[row]);
+	}
 }
 
 double dot(Matrix &a, Matrix &b) {

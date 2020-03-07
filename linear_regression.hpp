@@ -13,8 +13,9 @@
 #include <iostream>
 #include <fstream>
 #include "Matrix.hpp"
+#include "model.h"
 
-class linear_regression {
+class linear_regression: public model {
 	
 	linear_regression();
 	
