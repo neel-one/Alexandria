@@ -226,6 +226,7 @@ double det_helper(Matrix & m){
 }
 
 double det(Matrix & m){
+	if(m.rows() != m.cols()) throw OperationError();
 	return det_helper(m);
 }
 
