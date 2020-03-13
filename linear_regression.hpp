@@ -31,6 +31,16 @@ class linear_regression: public model {
 	//occur when gradient = 0)
 	//Solving we can derive B = inverse(transpose(X)*X))*transpose(X)*Y
 	
+	//Linear algebra based derivation:
+	//Suppose we have some system Ax = b where we have A and b and we want to
+	//fit some x (in our case beta)
+	// We know that A is likely not-invertible (non-square) so we can use a
+	//least square approximation: |b-Ax*| <= |b-Ax|
+	//A consistent system can be found  by transpose(A)*Ax = transpose(A)b
+	//Then x ~= x* = inverse(transpose(A)*A)*transpose(A)b
+	//Which is the same as paragraph above but changed variable names
+	//to align with many linear alg. based explanations instead of the intuitive explanation
+	
 	//NOTE: capital letters i.e. X, Y represent 'matrices' while lower-case
 	//represent vectors
 	
